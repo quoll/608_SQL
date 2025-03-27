@@ -1,2 +1,4 @@
-# 608_HW5_SQL
-HW5 for CMSC 608
+# 608\_SQL
+Homework 5 for CMSC 608.
+
+
