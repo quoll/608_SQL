@@ -8,7 +8,7 @@ url: "https://quoll.github.io/608_SQL"
 ---
 # Getting Started with SQL
 
-This project expands on using the contents of the [Shopping Trends](https://github.com/quoll/608_HW3_ERModels/blob/main/shopping_trends.csv) file from Assignment 3.
+This project expands on using the contents of the [Shopping Trends](https://github.com/quoll/608_HW3_ERModels/blob/main/shopping_trends.csv) file from Assignment 3. The repository containing all of the sources and data for this assigment is on [Github](https://quoll.github.io/608_SQL).
 
 ## Desription
 

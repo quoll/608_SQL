@@ -108,7 +108,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="getting-started-with-sql" class="level1">
 <h1>Getting Started with SQL</h1>
-<p>This project expands on using the contents of the <a href="https://github.com/quoll/608_HW3_ERModels/blob/main/shopping_trends.csv">Shopping Trends</a> file from Assignment 3.</p>
+<p>This project expands on using the contents of the <a href="https://github.com/quoll/608_HW3_ERModels/blob/main/shopping_trends.csv">Shopping Trends</a> file from Assignment 3. The repository containing all of the sources and data for this assigment is on <a href="https://quoll.github.io/608_SQL">Github</a>.</p>
 <section id="desription" class="level2">
 <h2 class="anchored" data-anchor-id="desription">Desription</h2>
 <p>The data represents purchases of items, made by customers in different times and places.</p>
@@ -176,7 +176,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="table-data" class="level2">
 <h2 class="anchored" data-anchor-id="table-data">Table Data</h2>
 <p>Typically, an SQL command of <code>SHOW TABLES;</code> would be ideal for showing all of the tables in the project. However, this database has also installed <a href="https://www.phpmyadmin.net/">phpMyAdmin</a> which adds more tables, but these can be skipped by querying <code>information_schema.tables</code> directly.</p>
-<div id="5c14d807" class="cell" data-execution_count="1">
+<div id="2bcf61ac" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dotenv <span class="im">import</span> load_dotenv</span>
@@ -206,7 +206,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
 <span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>pd.read_sql(query, conn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="1">
+<div class="cell-output cell-output-display" data-execution_count="4">
 <div>
 
 
@@ -261,7 +261,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>We can also see the fields for each table:</p>
-<div id="ecad87fa" class="cell" data-execution_count="2">
+<div id="4207da3a" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>tables <span class="op">=</span> [<span class="st">'customer'</span>, <span class="st">'item'</span>, <span class="st">'purchase'</span>, <span class="st">'payment_method'</span>,</span>
@@ -273,7 +273,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="ss">"""</span></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>pd.read_sql(query, conn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="2">
+<div class="cell-output cell-output-display" data-execution_count="5">
 <div>
 
 
@@ -504,7 +504,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Finally, we can see a sample of the data from each table:</p>
-<div id="7ca366ad" class="cell" data-execution_count="3">
+<div id="1c820368" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> table <span class="kw">in</span> tables:</span>
