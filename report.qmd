@@ -1,0 +1,41 @@
+---
+title: "Assignment 5"
+format: html
+---
+
+
+## Python example
+```{python}
+from dotenv import load_dotenv
+import os
+from sqlalchemy import create_engine
+import pandas as pd
+
+# conn = mysql.connector.connect(option_files=os.path.expanduser('~/.env'), database='project')
+def get_mysql_engine(env_path="~/.env"):
+    load_dotenv(os.path.expanduser(env_path))
+    
+    user = os.environ["user"]
+    password = os.environ["password"]
+    host = os.getenv("MYSQL_HOST", "localhost")
+    port = os.getenv("MYSQL_PORT", "3306")
+    database = os.environ["database"]
+
+    uri = f"mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}"
+    return create_engine(uri)
+
+query = """
+SELECT c.age, c.gender, MIN(p.purchase_amount) AS 'min_price', MAX(p.purchase_amount) AS 'max_price'
+FROM customer c
+INNER JOIN purchase p ON c.customer_id = p.customer_id
+INNER JOIN item i ON p.item_id = i.item_id
+INNER JOIN category cat ON i.category_id = cat.category_id
+INNER JOIN season s ON p.season_id = s.season_id
+WHERE cat.category_name = 'Clothing'
+GROUP BY c.age, c.gender
+ORDER by c.age, c.gender
+"""
+conn = get_mysql_engine()
+df = pd.read_sql(query, conn)
+df
+```
