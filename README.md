@@ -2,3 +2,122 @@
 Homework 5 for CMSC 608.
 
 The report page for the assignment is [here](https://quoll.github.io/608_SQL/report.html).
+
+The non-dynamic portions of this page are below.
+
+
+# Getting Started with SQL
+
+This project expands on using the contents of the [Shopping Trends](https://github.com/quoll/608_HW3_ERModels/blob/main/shopping_trends.csv) file from Assignment 3. The repository containing all of the sources and data for this assigment is on [Github](https://github.com/quoll/608_SQL).
+
+## Desription
+
+The data represents purchases of items, made by customers in different times and places.
+
+### Customers
+Customers are represented without personally identifying information, keeping only their age, gender (male or female), and their location. General information about their purchases is also associated with them, including a flag indicating if they have a subscription, how frequently that make purchases, and their preferred method of payment.
+
+### Items
+Items have a name, a category, a size, and a color. The name is referred to as `item_purchased` to reflect the way it is represented in the original dataset. An example of an item is a "T-shirt", which is in the category of "Clothing", and may have a size of "S" and a color of "Blue".
+
+### Purchase
+Purchases represent an event that connects a customer to an item, for a given price. The purchase occurs during a particular season (rather than a specific date and time), has a review rating from 0 to 5, includes a payment type, a shipping type, whether or not a discount was applied, and if a promotional code was used.
+
+### Other
+Each of the other tables in this schema represent low sparsity data in the 3 main tables. These may have been left as simple text fields within the data, but that would present an opportunity for mistakes to inadvertently create new values in the limited-item sets. To avoid this, the following fields from Customer have been put into their own tables, and are referenced by a foreign key in the `Customer` table:
+
+* `preferred_payment_method`
+* `frequency_of_purchases`
+* `location`
+
+Similarly, the following fields have been extracted from the `Purchase` table and referenced with foreign keys:
+
+* `payment_method`
+* `season`
+* `shipping`
+
+Note, that `Purchase.payment_method` references exactly the same data as `Customer.preferred_payment_method`, and so these are both foreign keys to the same table called `Payment_method`.
+
+A single field has also been extracted from the `Item` table into its own table and is referenced with a foreign key:
+
+* `category`
+
+## Design Details
+In assignment 3, each row was separated out in numerous tables, with the primary focus being on `Customer`, `Purchase`, and `Item`. Because many of the other fields have very low data sparsity, they were separated out into their own tables. The other option of using enumerated types was inappropriate, as they each represented a set of data that could potentially change over time.
+
+While customers are presumed to be capable of making multiple purchases (as indicated by the `frequency_of_purchases` field), this does not occur in the provided dataset. This leads to the unusual situation of Purchases and Items having a 1:1 relationship in the current data, _**however**_, the schema has been developed to assume that customers will come back for future purchases. This is an update to the schema presented for Assignment 3, as that schema was more focused on the data that was present. The new schema represents an active database, so new considerations have been made.
+
+In Assignment 3, the `Item` entity was left as an independent object. However, uploading this data into SQL made it clear that the field `category` also has limited sparsity, so it was extracted into its own table via a foreign key. The `item_purchased` field also looked appropriate for this, but familiarity with this domain makes it clear that a vary large number of items could end up in this column, making it potentially far less sparse. Hence, this field was left untouched.
+
+## ER Diagrams
+The resulting schema is represented here in the following Chen and Crow's Foot ER diagrams.
+
+### Shopping Trends Chen ER Diagram
+![Shopping Trends Chen ER Diagram](https://quoll.github.io/608_SQL/diagrams/shopping_trends_chen.png)
+
+### Shopping Trends Crows Foot ER Diagram
+![Shopping Trends Crows Foot ER Diagram](https://quoll.github.io/608_SQL/diagrams/shopping_trends.png)
+
+
+## Table Data
+Typically, an SQL command of `SHOW TABLES;` can be used to show all of the tables in the project. This can also be done manually by querying the systems tables, if filtering is required.
+
+```{python}
+from dotenv import load_dotenv
+import os
+from sqlalchemy import create_engine
+import pandas as pd
+from IPython.display import Markdown, display
+
+# conn = mysql.connector.connect(option_files=os.path.expanduser('~/.env'), database='project')
+def get_mysql_engine(env_path="~/.env"):
+    load_dotenv(os.path.expanduser(env_path))
+    
+    user = os.environ["MYSQL_USER"]
+    password = os.environ["MYSQL_PASS"]
+    host = os.getenv("MYSQL_HOST", "localhost")
+    port = os.getenv("MYSQL_PORT", "3306")
+    database = os.environ["MYSQL_DATABASE"]
+
+    uri = f"mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}"
+    return create_engine(uri)
+
+conn = get_mysql_engine()
+pd.read_sql("SHOW TABLES;", conn)
+```
+
+We can also see the fields for each table:
+
+```{python}
+tables = ['customer', 'item', 'purchase', 'payment_method',
+          'frequency', 'location', 'category', 'season', 'shipping_type']
+query = f"""SELECT table_name, column_name, data_type
+FROM information_schema.columns
+WHERE table_name IN ({", ".join(f"'{x}'" for x in tables)})
+ORDER BY table_name, ordinal_position;
+"""
+pd.read_sql(query, conn)
+```
+
+Finally, we can see a sample of the data from each table:
+```{python}
+for table in tables:
+    display(Markdown(f"#### {table}"))
+    display(pd.read_sql(f"SELECT * FROM {table} LIMIT 5;", conn))
+```
+
+## Supporting Files
+### Script
+Extracting the individual table data from the original CSV was done via a scripting language. This was necessary to extract the data that appears in separate tables and addressed by foreign keys. The language used was Clojure, or in this case it was Babashka as this is a "scripting" variant. The code can be found in [`scripts/extract.bb`](https://github.com/quoll/608_SQL/blob/main/scripts/extract.bb).
+
+### Data Definition Language
+The Data Definition Language file (DDL) was hand generated and defines each of the tables, along with their foreign keys. This can be found in [`data/definitions.sql`](https://github.com/quoll/608_SQL/blob/main/data/definitions.sql)
+
+### Data
+The data is loaded using SQL `INSERT ... VALUES` statements. This are similar to Comma Separated Value files, and have the additional advantages or allowing multiple table structures in a single file, as well as being the native format that MySQL exports data in. This file was created from the CSV data exported by the script above.
+
+The data is found in [`data/data.sql`](https://github.com/quoll/608_SQL/blob/main/data/data.sql)
+
+## License
+Copyright and related rights waived via CC0
+
