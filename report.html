@@ -175,8 +175,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="table-data" class="level2">
 <h2 class="anchored" data-anchor-id="table-data">Table Data</h2>
-<p>Typically, an SQL command of <code>SHOW TABLES;</code> would be ideal for showing all of the tables in the project. However, this database has also installed <a href="https://www.phpmyadmin.net/">phpMyAdmin</a> which adds more tables, but these can be skipped by querying <code>information_schema.tables</code> directly.</p>
-<div id="1967f074" class="cell" data-execution_count="1">
+<p>Typically, an SQL command of <code>SHOW TABLES;</code> can be used to show all of the tables in the project. This can also be done manually by querying the systems tables, if filtering is required.</p>
+<div id="f91af8ac" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dotenv <span class="im">import</span> load_dotenv</span>
@@ -199,14 +199,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> create_engine(uri)</span>
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>conn <span class="op">=</span> get_mysql_engine()</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>query <span class="op">=</span> <span class="st">"""SELECT table_name</span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="st">FROM information_schema.tables</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="st">WHERE table_schema ='project' AND table_name NOT LIKE 'pma\_\_%'</span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="st">ORDER BY table_schema, table_name;</span></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>pd.read_sql(query, conn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>pd.read_sql(<span class="st">"SHOW TABLES;"</span>, conn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="10">
+<div class="cell-output cell-output-display" data-execution_count="1">
 <div>
 
 
@@ -214,7 +209,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">TABLE_NAME</th>
+<th data-quarto-table-cell-role="th">Tables_in_shopping</th>
 </tr>
 </thead>
 <tbody>
@@ -261,7 +256,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>We can also see the fields for each table:</p>
-<div id="9ad15e83" class="cell" data-execution_count="2">
+<div id="889822ca" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>tables <span class="op">=</span> [<span class="st">'customer'</span>, <span class="st">'item'</span>, <span class="st">'purchase'</span>, <span class="st">'payment_method'</span>,</span>
@@ -273,7 +268,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="ss">"""</span></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>pd.read_sql(query, conn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="11">
+<div class="cell-output cell-output-display" data-execution_count="2">
 <div>
 
 
@@ -296,203 +291,59 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="even">
 <td data-quarto-table-cell-role="th">1</td>
 <td>category</td>
+<td>category_id</td>
+<td>bigint</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>category</td>
+<td>category_name</td>
+<td>varchar</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>category</td>
 <td>category_name</td>
 <td>varchar</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">2</td>
-<td>customer</td>
-<td>customer_id</td>
-<td>bigint</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">3</td>
-<td>customer</td>
-<td>age</td>
-<td>int</td>
-</tr>
-<tr class="odd">
 <td data-quarto-table-cell-role="th">4</td>
 <td>customer</td>
-<td>gender</td>
-<td>enum</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">5</td>
-<td>customer</td>
-<td>location_id</td>
-<td>bigint</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">6</td>
-<td>customer</td>
-<td>subscription_status</td>
-<td>enum</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">7</td>
-<td>customer</td>
-<td>previous_purchases</td>
-<td>int</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">8</td>
-<td>customer</td>
-<td>preferred_payment_method_id</td>
-<td>bigint</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">9</td>
-<td>customer</td>
-<td>frequency_of_purchases_id</td>
-<td>bigint</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">10</td>
-<td>frequency</td>
-<td>frequency_id</td>
-<td>bigint</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">11</td>
-<td>frequency</td>
-<td>frequency_name</td>
-<td>varchar</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">12</td>
-<td>item</td>
-<td>item_id</td>
-<td>bigint</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">13</td>
-<td>item</td>
-<td>item_purchased</td>
-<td>varchar</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">14</td>
-<td>item</td>
-<td>category_id</td>
-<td>bigint</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">15</td>
-<td>item</td>
-<td>size</td>
-<td>varchar</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">16</td>
-<td>item</td>
-<td>color</td>
-<td>varchar</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">17</td>
-<td>location</td>
-<td>location_id</td>
-<td>bigint</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">18</td>
-<td>location</td>
-<td>location_name</td>
-<td>varchar</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">19</td>
-<td>payment_method</td>
-<td>payment_method_id</td>
-<td>bigint</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">20</td>
-<td>payment_method</td>
-<td>payment_method</td>
-<td>varchar</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">21</td>
-<td>purchase</td>
-<td>purchase_id</td>
-<td>bigint</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">22</td>
-<td>purchase</td>
-<td>item_id</td>
-<td>bigint</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">23</td>
-<td>purchase</td>
 <td>customer_id</td>
 <td>bigint</td>
 </tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">24</td>
-<td>purchase</td>
-<td>purchase_amount</td>
-<td>decimal</td>
-</tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">25</td>
-<td>purchase</td>
-<td>season_id</td>
-<td>bigint</td>
+<td data-quarto-table-cell-role="th">...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">26</td>
-<td>purchase</td>
-<td>review_rating</td>
-<td>decimal</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">27</td>
-<td>purchase</td>
-<td>payment_method_id</td>
-<td>bigint</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">28</td>
-<td>purchase</td>
-<td>shipping_type_id</td>
-<td>bigint</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">29</td>
-<td>purchase</td>
-<td>discount_applied</td>
-<td>enum</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">30</td>
-<td>purchase</td>
-<td>promo_code_used</td>
-<td>enum</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">31</td>
-<td>season</td>
-<td>season_id</td>
-<td>bigint</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">32</td>
+<td data-quarto-table-cell-role="th">65</td>
 <td>season</td>
 <td>season_name</td>
 <td>varchar</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">33</td>
+<td data-quarto-table-cell-role="th">66</td>
 <td>shipping_type</td>
 <td>shipping_type_id</td>
 <td>bigint</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">34</td>
+<td data-quarto-table-cell-role="th">67</td>
+<td>shipping_type</td>
+<td>shipping_type_id</td>
+<td>bigint</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">68</td>
+<td>shipping_type</td>
+<td>shipping_type_name</td>
+<td>varchar</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">69</td>
 <td>shipping_type</td>
 <td>shipping_type_name</td>
 <td>varchar</td>
@@ -500,11 +351,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 
+<p>70 rows × 3 columns</p>
 </div>
 </div>
 </div>
 <p>Finally, we can see a sample of the data from each table:</p>
-<div id="2ac7dbb5" class="cell" data-execution_count="3">
+<div id="2271b85c" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> table <span class="kw">in</span> tables:</span>
@@ -538,55 +390,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>1</td>
 <td>55</td>
 <td>Male</td>
-<td>17</td>
+<td>16</td>
 <td>Yes</td>
 <td>14</td>
-<td>6</td>
-<td>4</td>
+<td>5</td>
+<td>3</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">1</td>
 <td>2</td>
 <td>19</td>
 <td>Male</td>
-<td>19</td>
+<td>18</td>
 <td>Yes</td>
 <td>2</td>
-<td>2</td>
-<td>4</td>
+<td>1</td>
+<td>3</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">2</td>
 <td>3</td>
 <td>50</td>
 <td>Male</td>
-<td>21</td>
+<td>20</td>
 <td>Yes</td>
 <td>23</td>
-<td>3</td>
-<td>7</td>
+<td>2</td>
+<td>6</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">3</td>
 <td>4</td>
 <td>21</td>
 <td>Male</td>
-<td>39</td>
+<td>38</td>
 <td>Yes</td>
 <td>49</td>
-<td>5</td>
-<td>7</td>
+<td>4</td>
+<td>6</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">4</td>
 <td>5</td>
 <td>45</td>
 <td>Male</td>
-<td>37</td>
+<td>36</td>
 <td>Yes</td>
 <td>31</td>
-<td>5</td>
-<td>1</td>
+<td>4</td>
+<td>0</td>
 </tr>
 </tbody>
 </table>
@@ -614,41 +466,41 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">0</td>
-<td>1</td>
+<td>0</td>
 <td>Backpack</td>
-<td>1</td>
+<td>0</td>
 <td>L</td>
 <td>Beige</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">1</td>
-<td>2</td>
-<td>Backpack</td>
 <td>1</td>
+<td>Backpack</td>
+<td>0</td>
 <td>L</td>
 <td>Black</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">2</td>
-<td>3</td>
+<td>2</td>
 <td>Backpack</td>
-<td>1</td>
+<td>0</td>
 <td>L</td>
 <td>Blue</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">3</td>
-<td>4</td>
+<td>3</td>
 <td>Backpack</td>
-<td>1</td>
+<td>0</td>
 <td>L</td>
 <td>Brown</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">4</td>
-<td>5</td>
+<td>4</td>
 <td>Backpack</td>
-<td>1</td>
+<td>0</td>
 <td>L</td>
 <td>Cyan</td>
 </tr>
@@ -684,65 +536,65 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td data-quarto-table-cell-role="th">0</td>
 <td>1</td>
-<td>149</td>
+<td>148</td>
 <td>1</td>
 <td>53.0</td>
-<td>4</td>
-<td>3.1</td>
 <td>3</td>
+<td>3.1</td>
 <td>2</td>
+<td>1</td>
 <td>Yes</td>
 <td>Yes</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">1</td>
 <td>2</td>
-<td>1686</td>
+<td>1685</td>
 <td>2</td>
 <td>64.0</td>
-<td>4</td>
+<td>3</td>
 <td>3.1</td>
+<td>0</td>
 <td>1</td>
-<td>2</td>
 <td>Yes</td>
 <td>Yes</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">2</td>
 <td>3</td>
-<td>842</td>
+<td>841</td>
 <td>3</td>
 <td>73.0</td>
-<td>2</td>
+<td>1</td>
 <td>3.1</td>
+<td>1</td>
 <td>2</td>
-<td>3</td>
 <td>Yes</td>
 <td>Yes</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">3</td>
 <td>4</td>
-<td>1050</td>
+<td>1049</td>
 <td>4</td>
 <td>90.0</td>
-<td>2</td>
+<td>1</td>
 <td>3.5</td>
-<td>5</td>
 <td>4</td>
+<td>3</td>
 <td>Yes</td>
 <td>Yes</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">4</td>
 <td>5</td>
-<td>185</td>
+<td>184</td>
 <td>5</td>
 <td>49.0</td>
-<td>2</td>
+<td>1</td>
 <td>2.7</td>
+<td>1</td>
 <td>2</td>
-<td>3</td>
 <td>Yes</td>
 <td>Yes</td>
 </tr>
@@ -769,27 +621,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">0</td>
-<td>1</td>
+<td>0</td>
 <td>Bank Transfer</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">1</td>
-<td>2</td>
+<td>1</td>
 <td>Cash</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">2</td>
-<td>3</td>
+<td>2</td>
 <td>Credit Card</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">3</td>
-<td>4</td>
+<td>3</td>
 <td>Debit Card</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">4</td>
-<td>5</td>
+<td>4</td>
 <td>PayPal</td>
 </tr>
 </tbody>
@@ -815,27 +667,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">0</td>
-<td>1</td>
+<td>0</td>
 <td>Annually</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">1</td>
-<td>2</td>
+<td>1</td>
 <td>Bi-Weekly</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">2</td>
-<td>3</td>
+<td>2</td>
 <td>Every 3 Months</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">3</td>
-<td>4</td>
+<td>3</td>
 <td>Fortnightly</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">4</td>
-<td>5</td>
+<td>4</td>
 <td>Monthly</td>
 </tr>
 </tbody>
@@ -861,27 +713,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">0</td>
-<td>1</td>
+<td>0</td>
 <td>Alabama</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">1</td>
-<td>2</td>
+<td>1</td>
 <td>Alaska</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">2</td>
-<td>3</td>
+<td>2</td>
 <td>Arizona</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">3</td>
-<td>4</td>
+<td>3</td>
 <td>Arkansas</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">4</td>
-<td>5</td>
+<td>4</td>
 <td>California</td>
 </tr>
 </tbody>
@@ -907,22 +759,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">0</td>
-<td>1</td>
+<td>0</td>
 <td>Accessories</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">1</td>
-<td>2</td>
+<td>1</td>
 <td>Clothing</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">2</td>
-<td>3</td>
+<td>2</td>
 <td>Footwear</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">3</td>
-<td>4</td>
+<td>3</td>
 <td>Outerwear</td>
 </tr>
 </tbody>
@@ -948,22 +800,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">0</td>
-<td>1</td>
+<td>0</td>
 <td>Fall</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">1</td>
-<td>2</td>
+<td>1</td>
 <td>Spring</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">2</td>
-<td>3</td>
+<td>2</td>
 <td>Summer</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">3</td>
-<td>4</td>
+<td>3</td>
 <td>Winter</td>
 </tr>
 </tbody>
@@ -989,27 +841,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">0</td>
-<td>1</td>
+<td>0</td>
 <td>2-Day Shipping</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">1</td>
-<td>2</td>
+<td>1</td>
 <td>Express</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">2</td>
-<td>3</td>
+<td>2</td>
 <td>Free Shipping</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">3</td>
-<td>4</td>
+<td>3</td>
 <td>Next Day Air</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">4</td>
-<td>5</td>
+<td>4</td>
 <td>Standard</td>
 </tr>
 </tbody>

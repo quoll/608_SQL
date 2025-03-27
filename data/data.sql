@@ -58,7 +58,6 @@ INSERT INTO location (location_id, location_name) VALUES
     (48,'Wisconsin'),
     (49,'Wyoming');
 
-id,frequency_of_purchases
 INSERT INTO frequency (frequency_id, frequency_name) VALUES
     (0,'Annually'),
     (1,'Bi-Weekly'),
@@ -83,7 +82,6 @@ INSERT INTO shipping_type (shipping_type_id, shipping_type_name) VALUES
     (5,'Store Pickup');
 
 INSERT INTO category (category_id, category_name) VALUES
-
     (0,'Accessories'),
     (1,'Clothing'),
     (2,'Footwear'),

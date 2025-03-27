@@ -60,7 +60,7 @@ The resulting schema is represented here in the following Chen and Crow's Foot E
 
 
 ## Table Data
-Typically, an SQL command of `SHOW TABLES;` would be ideal for showing all of the tables in the project. However, this database has also installed [phpMyAdmin](https://www.phpmyadmin.net/) which adds more tables, but these can be skipped by querying `information_schema.tables` directly.
+Typically, an SQL command of `SHOW TABLES;` can be used to show all of the tables in the project. This can also be done manually by querying the systems tables, if filtering is required.
 
 ```{python}
 from dotenv import load_dotenv
@@ -83,12 +83,7 @@ def get_mysql_engine(env_path="~/.env"):
     return create_engine(uri)
 
 conn = get_mysql_engine()
-query = """SELECT table_name
-FROM information_schema.tables
-WHERE table_schema ='project' AND table_name NOT LIKE 'pma\_\_%'
-ORDER BY table_schema, table_name;
-"""
-pd.read_sql(query, conn)
+pd.read_sql("SHOW TABLES;", conn)
 ```
 
 We can also see the fields for each table:

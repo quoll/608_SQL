@@ -105,7 +105,6 @@
                                              set
                                              sort
                                              (map-indexed (fn [i x] [i x])))]
-      (println (str/join "," (prepend "id" (select [frequency-column] shopping-headers))))
       (print "INSERT INTO frequency (frequency_id, frequency_name) VALUES")
       (print (line ffreq [1] true))
       (doseq [freq freqs]
@@ -145,7 +144,7 @@
                                                            set
                                                            sort
                                                            (map-indexed (fn [i x] [i x])))]
-      (println "INSERT INTO category (category_id, category_name) VALUES")
+      (print "INSERT INTO category (category_id, category_name) VALUES")
       (print (line fcategory [1] true))
       (doseq [category categories]
         (print (line category [1])))
