@@ -145,8 +145,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 </section>
 </section>
-<section id="background" class="level2">
-<h2 class="anchored" data-anchor-id="background">Background</h2>
+<section id="design-details" class="level2">
+<h2 class="anchored" data-anchor-id="design-details">Design Details</h2>
 <p>In assignment 3, each row was separated out in numerous tables, with the primary focus being on <code>Customer</code>, <code>Purchase</code>, and <code>Item</code>. Because many of the other fields have very low data sparsity, they were separated out into their own tables. The other option of using enumerated types was inappropriate, as they each represented a set of data that could potentially change over time.</p>
 <p>While customers are presumed to be capable of making multiple purchases (as indicated by the <code>frequency_of_purchases</code> field), this does not occur in the provided dataset. This leads to the unusual situation of Purchases and Items having a 1:1 relationship in the current data, <em><strong>however</strong></em>, the schema has been developed to assume that customers will come back for future purchases. This is an update to the schema presented for Assignment 3, as that schema was more focused on the data that was present. The new schema represents an active database, so new considerations have been made.</p>
 <p>In Assignment 3, the <code>Item</code> entity was left as an independent object. However, uploading this data into SQL made it clear that the field <code>category</code> also has limited sparsity, so it was extracted into its own table via a foreign key. The <code>item_purchased</code> field also looked appropriate for this, but familiarity with this domain makes it clear that a vary large number of items could end up in this column, making it potentially far less sparse. Hence, this field was left untouched.</p>
@@ -171,51 +171,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <figcaption>Shopping Trends Crows Foot ER Diagram</figcaption>
 </figure>
 </div>
-<div id="57b80063" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(sys.executable)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>/opt/homebrew/anaconda3/bin/python</code></pre>
-</div>
-</div>
 </section>
 </section>
-<section id="python-example" class="level2">
-<h2 class="anchored" data-anchor-id="python-example">Python example</h2>
-<div id="0e10e539" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dotenv <span class="im">import</span> load_dotenv</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sqlalchemy <span class="im">import</span> create_engine</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># conn = mysql.connector.connect(option_files=os.path.expanduser('~/.env'), database='project')</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_mysql_engine(env_path<span class="op">=</span><span class="st">"~/.env"</span>):</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    load_dotenv(os.path.expanduser(env_path))</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    user <span class="op">=</span> os.environ[<span class="st">"MYSQL_USER"</span>]</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    password <span class="op">=</span> os.environ[<span class="st">"MYSQL_PASS"</span>]</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    host <span class="op">=</span> os.getenv(<span class="st">"MYSQL_HOST"</span>, <span class="st">"localhost"</span>)</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    port <span class="op">=</span> os.getenv(<span class="st">"MYSQL_PORT"</span>, <span class="st">"3306"</span>)</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    database <span class="op">=</span> os.environ[<span class="st">"MYSQL_DATABASE"</span>]</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    uri <span class="op">=</span> <span class="ss">f"mysql+mysqlconnector://</span><span class="sc">{</span>user<span class="sc">}</span><span class="ss">:</span><span class="sc">{</span>password<span class="sc">}</span><span class="ss">@</span><span class="sc">{</span>host<span class="sc">}</span><span class="ss">:</span><span class="sc">{</span>port<span class="sc">}</span><span class="ss">/</span><span class="sc">{</span>database<span class="sc">}</span><span class="ss">"</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> create_engine(uri)</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>query <span class="op">=</span> <span class="st">"""</span></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="st">SELECT c.age, c.gender, MIN(p.purchase_amount) AS 'min_price', MAX(p.purchase_amount) AS 'max_price'</span></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="st">FROM customer c</span></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="st">INNER JOIN purchase p ON c.customer_id = p.customer_id</span></span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="st">INNER JOIN item i ON p.item_id = i.item_id</span></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="st">INNER JOIN category cat ON i.category_id = cat.category_id</span></span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="st">INNER JOIN season s ON p.season_id = s.season_id</span></span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="st">WHERE cat.category_name = 'Clothing'</span></span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="st">GROUP BY c.age, c.gender</span></span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="st">ORDER by c.age, c.gender</span></span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>conn <span class="op">=</span> get_mysql_engine()</span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_sql(query, conn)</span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="4">
+<section id="table-data" class="level2">
+<h2 class="anchored" data-anchor-id="table-data">Table Data</h2>
+<p>Typically, an SQL command of <code>SHOW TABLES;</code> would be ideal for showing all of the tables in the project. However, this database has also installed <a href="https://www.phpmyadmin.net/">phpMyAdmin</a> which adds more tables, but these can be skipped by querying <code>information_schema.tables</code> directly.</p>
+<div id="5c14d807" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dotenv <span class="im">import</span> load_dotenv</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sqlalchemy <span class="im">import</span> create_engine</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> Markdown, display</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># conn = mysql.connector.connect(option_files=os.path.expanduser('~/.env'), database='project')</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_mysql_engine(env_path<span class="op">=</span><span class="st">"~/.env"</span>):</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    load_dotenv(os.path.expanduser(env_path))</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    user <span class="op">=</span> os.environ[<span class="st">"MYSQL_USER"</span>]</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    password <span class="op">=</span> os.environ[<span class="st">"MYSQL_PASS"</span>]</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    host <span class="op">=</span> os.getenv(<span class="st">"MYSQL_HOST"</span>, <span class="st">"localhost"</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    port <span class="op">=</span> os.getenv(<span class="st">"MYSQL_PORT"</span>, <span class="st">"3306"</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    database <span class="op">=</span> os.environ[<span class="st">"MYSQL_DATABASE"</span>]</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    uri <span class="op">=</span> <span class="ss">f"mysql+mysqlconnector://</span><span class="sc">{</span>user<span class="sc">}</span><span class="ss">:</span><span class="sc">{</span>password<span class="sc">}</span><span class="ss">@</span><span class="sc">{</span>host<span class="sc">}</span><span class="ss">:</span><span class="sc">{</span>port<span class="sc">}</span><span class="ss">/</span><span class="sc">{</span>database<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> create_engine(uri)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>conn <span class="op">=</span> get_mysql_engine()</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>query <span class="op">=</span> <span class="st">"""SELECT table_name</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="st">FROM information_schema.tables</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="st">WHERE table_schema ='project' AND table_name NOT LIKE 'pma\_\_%'</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="st">ORDER BY table_schema, table_name;</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>pd.read_sql(query, conn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="1">
 <div>
 
 
@@ -223,97 +214,826 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">age</th>
-<th data-quarto-table-cell-role="th">gender</th>
-<th data-quarto-table-cell-role="th">min_price</th>
-<th data-quarto-table-cell-role="th">max_price</th>
+<th data-quarto-table-cell-role="th">TABLE_NAME</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">0</td>
-<td>18</td>
-<td>Male</td>
-<td>22.0</td>
-<td>100.0</td>
+<td>category</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">1</td>
-<td>18</td>
-<td>Female</td>
-<td>25.0</td>
-<td>100.0</td>
+<td>customer</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">2</td>
-<td>19</td>
-<td>Male</td>
-<td>23.0</td>
-<td>98.0</td>
+<td>frequency</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">3</td>
-<td>19</td>
-<td>Female</td>
-<td>26.0</td>
-<td>97.0</td>
+<td>item</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">4</td>
-<td>20</td>
-<td>Male</td>
-<td>23.0</td>
-<td>97.0</td>
+<td>location</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
+<td data-quarto-table-cell-role="th">5</td>
+<td>payment_method</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">101</td>
-<td>68</td>
-<td>Female</td>
-<td>22.0</td>
-<td>91.0</td>
+<td data-quarto-table-cell-role="th">6</td>
+<td>purchase</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">102</td>
-<td>69</td>
-<td>Male</td>
-<td>21.0</td>
-<td>99.0</td>
+<td data-quarto-table-cell-role="th">7</td>
+<td>season</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">103</td>
-<td>69</td>
-<td>Female</td>
-<td>32.0</td>
-<td>100.0</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">104</td>
-<td>70</td>
-<td>Male</td>
-<td>20.0</td>
-<td>97.0</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">105</td>
-<td>70</td>
-<td>Female</td>
-<td>27.0</td>
-<td>88.0</td>
+<td data-quarto-table-cell-role="th">8</td>
+<td>shipping_type</td>
 </tr>
 </tbody>
 </table>
 
-<p>106 rows × 4 columns</p>
 </div>
 </div>
 </div>
+<p>We can also see the fields for each table:</p>
+<div id="ecad87fa" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>tables <span class="op">=</span> [<span class="st">'customer'</span>, <span class="st">'item'</span>, <span class="st">'purchase'</span>, <span class="st">'payment_method'</span>,</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>          <span class="st">'frequency'</span>, <span class="st">'location'</span>, <span class="st">'category'</span>, <span class="st">'season'</span>, <span class="st">'shipping_type'</span>]</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>query <span class="op">=</span> <span class="ss">f"""SELECT table_name, column_name, data_type</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ss">FROM information_schema.columns</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ss">WHERE table_name IN (</span><span class="sc">{</span><span class="st">", "</span><span class="sc">.</span>join(<span class="ss">f"'</span><span class="sc">{</span>x<span class="sc">}</span><span class="ss">'"</span> <span class="cf">for</span> x <span class="kw">in</span> tables)<span class="sc">}</span><span class="ss">)</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="ss">ORDER BY table_name, ordinal_position;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="ss">"""</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>pd.read_sql(query, conn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">TABLE_NAME</th>
+<th data-quarto-table-cell-role="th">COLUMN_NAME</th>
+<th data-quarto-table-cell-role="th">DATA_TYPE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>category</td>
+<td>category_id</td>
+<td>bigint</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>category</td>
+<td>category_name</td>
+<td>varchar</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>customer</td>
+<td>customer_id</td>
+<td>bigint</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>customer</td>
+<td>age</td>
+<td>int</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>customer</td>
+<td>gender</td>
+<td>enum</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">5</td>
+<td>customer</td>
+<td>location_id</td>
+<td>bigint</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">6</td>
+<td>customer</td>
+<td>subscription_status</td>
+<td>enum</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">7</td>
+<td>customer</td>
+<td>previous_purchases</td>
+<td>int</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">8</td>
+<td>customer</td>
+<td>preferred_payment_method_id</td>
+<td>bigint</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">9</td>
+<td>customer</td>
+<td>frequency_of_purchases_id</td>
+<td>bigint</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">10</td>
+<td>frequency</td>
+<td>frequency_id</td>
+<td>bigint</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">11</td>
+<td>frequency</td>
+<td>frequency_name</td>
+<td>varchar</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">12</td>
+<td>item</td>
+<td>item_id</td>
+<td>bigint</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">13</td>
+<td>item</td>
+<td>item_purchased</td>
+<td>varchar</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">14</td>
+<td>item</td>
+<td>category_id</td>
+<td>bigint</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">15</td>
+<td>item</td>
+<td>size</td>
+<td>varchar</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">16</td>
+<td>item</td>
+<td>color</td>
+<td>varchar</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">17</td>
+<td>location</td>
+<td>location_id</td>
+<td>bigint</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">18</td>
+<td>location</td>
+<td>location_name</td>
+<td>varchar</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">19</td>
+<td>payment_method</td>
+<td>payment_method_id</td>
+<td>bigint</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">20</td>
+<td>payment_method</td>
+<td>payment_method</td>
+<td>varchar</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">21</td>
+<td>purchase</td>
+<td>purchase_id</td>
+<td>bigint</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">22</td>
+<td>purchase</td>
+<td>item_id</td>
+<td>bigint</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">23</td>
+<td>purchase</td>
+<td>customer_id</td>
+<td>bigint</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">24</td>
+<td>purchase</td>
+<td>purchase_amount</td>
+<td>decimal</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">25</td>
+<td>purchase</td>
+<td>season_id</td>
+<td>bigint</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">26</td>
+<td>purchase</td>
+<td>review_rating</td>
+<td>decimal</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">27</td>
+<td>purchase</td>
+<td>payment_method_id</td>
+<td>bigint</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">28</td>
+<td>purchase</td>
+<td>shipping_type_id</td>
+<td>bigint</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">29</td>
+<td>purchase</td>
+<td>discount_applied</td>
+<td>enum</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">30</td>
+<td>purchase</td>
+<td>promo_code_used</td>
+<td>enum</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">31</td>
+<td>season</td>
+<td>season_id</td>
+<td>bigint</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">32</td>
+<td>season</td>
+<td>season_name</td>
+<td>varchar</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">33</td>
+<td>shipping_type</td>
+<td>shipping_type_id</td>
+<td>bigint</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">34</td>
+<td>shipping_type</td>
+<td>shipping_type_name</td>
+<td>varchar</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Finally, we can see a sample of the data from each table:</p>
+<div id="7ca366ad" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> table <span class="kw">in</span> tables:</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    display(Markdown(<span class="ss">f"#### </span><span class="sc">{</span>table<span class="sc">}</span><span class="ss">"</span>))</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    display(pd.read_sql(<span class="ss">f"SELECT * FROM </span><span class="sc">{</span>table<span class="sc">}</span><span class="ss"> LIMIT 5;"</span>, conn))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<section id="customer" class="level4 cell-output cell-output-display cell-output-markdown">
+<h4 class="anchored" data-anchor-id="customer">customer</h4>
+</section>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">customer_id</th>
+<th data-quarto-table-cell-role="th">age</th>
+<th data-quarto-table-cell-role="th">gender</th>
+<th data-quarto-table-cell-role="th">location_id</th>
+<th data-quarto-table-cell-role="th">subscription_status</th>
+<th data-quarto-table-cell-role="th">previous_purchases</th>
+<th data-quarto-table-cell-role="th">preferred_payment_method_id</th>
+<th data-quarto-table-cell-role="th">frequency_of_purchases_id</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>1</td>
+<td>55</td>
+<td>Male</td>
+<td>17</td>
+<td>Yes</td>
+<td>14</td>
+<td>6</td>
+<td>4</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>2</td>
+<td>19</td>
+<td>Male</td>
+<td>19</td>
+<td>Yes</td>
+<td>2</td>
+<td>2</td>
+<td>4</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>3</td>
+<td>50</td>
+<td>Male</td>
+<td>21</td>
+<td>Yes</td>
+<td>23</td>
+<td>3</td>
+<td>7</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>4</td>
+<td>21</td>
+<td>Male</td>
+<td>39</td>
+<td>Yes</td>
+<td>49</td>
+<td>5</td>
+<td>7</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>5</td>
+<td>45</td>
+<td>Male</td>
+<td>37</td>
+<td>Yes</td>
+<td>31</td>
+<td>5</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<section id="item" class="level4 cell-output cell-output-display cell-output-markdown">
+<h4 class="anchored" data-anchor-id="item">item</h4>
+</section>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">item_id</th>
+<th data-quarto-table-cell-role="th">item_purchased</th>
+<th data-quarto-table-cell-role="th">category_id</th>
+<th data-quarto-table-cell-role="th">size</th>
+<th data-quarto-table-cell-role="th">color</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>1</td>
+<td>Backpack</td>
+<td>1</td>
+<td>L</td>
+<td>Beige</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>2</td>
+<td>Backpack</td>
+<td>1</td>
+<td>L</td>
+<td>Black</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>3</td>
+<td>Backpack</td>
+<td>1</td>
+<td>L</td>
+<td>Blue</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>4</td>
+<td>Backpack</td>
+<td>1</td>
+<td>L</td>
+<td>Brown</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>5</td>
+<td>Backpack</td>
+<td>1</td>
+<td>L</td>
+<td>Cyan</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<section id="purchase-1" class="level4 cell-output cell-output-display cell-output-markdown">
+<h4 class="anchored" data-anchor-id="purchase-1">purchase</h4>
+</section>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">purchase_id</th>
+<th data-quarto-table-cell-role="th">item_id</th>
+<th data-quarto-table-cell-role="th">customer_id</th>
+<th data-quarto-table-cell-role="th">purchase_amount</th>
+<th data-quarto-table-cell-role="th">season_id</th>
+<th data-quarto-table-cell-role="th">review_rating</th>
+<th data-quarto-table-cell-role="th">payment_method_id</th>
+<th data-quarto-table-cell-role="th">shipping_type_id</th>
+<th data-quarto-table-cell-role="th">discount_applied</th>
+<th data-quarto-table-cell-role="th">promo_code_used</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>1</td>
+<td>149</td>
+<td>1</td>
+<td>53.0</td>
+<td>4</td>
+<td>3.1</td>
+<td>3</td>
+<td>2</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>2</td>
+<td>1686</td>
+<td>2</td>
+<td>64.0</td>
+<td>4</td>
+<td>3.1</td>
+<td>1</td>
+<td>2</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>3</td>
+<td>842</td>
+<td>3</td>
+<td>73.0</td>
+<td>2</td>
+<td>3.1</td>
+<td>2</td>
+<td>3</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>4</td>
+<td>1050</td>
+<td>4</td>
+<td>90.0</td>
+<td>2</td>
+<td>3.5</td>
+<td>5</td>
+<td>4</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>5</td>
+<td>185</td>
+<td>5</td>
+<td>49.0</td>
+<td>2</td>
+<td>2.7</td>
+<td>2</td>
+<td>3</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<section id="payment_method" class="level4 cell-output cell-output-display cell-output-markdown">
+<h4 class="anchored" data-anchor-id="payment_method">payment_method</h4>
+</section>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">payment_method_id</th>
+<th data-quarto-table-cell-role="th">payment_method</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>1</td>
+<td>Bank Transfer</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>2</td>
+<td>Cash</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>3</td>
+<td>Credit Card</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>4</td>
+<td>Debit Card</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>5</td>
+<td>PayPal</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<section id="frequency" class="level4 cell-output cell-output-display cell-output-markdown">
+<h4 class="anchored" data-anchor-id="frequency">frequency</h4>
+</section>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">frequency_id</th>
+<th data-quarto-table-cell-role="th">frequency_name</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>1</td>
+<td>Annually</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>2</td>
+<td>Bi-Weekly</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>3</td>
+<td>Every 3 Months</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>4</td>
+<td>Fortnightly</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>5</td>
+<td>Monthly</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<section id="location" class="level4 cell-output cell-output-display cell-output-markdown">
+<h4 class="anchored" data-anchor-id="location">location</h4>
+</section>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">location_id</th>
+<th data-quarto-table-cell-role="th">location_name</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>1</td>
+<td>Alabama</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>2</td>
+<td>Alaska</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>3</td>
+<td>Arizona</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>4</td>
+<td>Arkansas</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>5</td>
+<td>California</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<section id="category" class="level4 cell-output cell-output-display cell-output-markdown">
+<h4 class="anchored" data-anchor-id="category">category</h4>
+</section>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">category_id</th>
+<th data-quarto-table-cell-role="th">category_name</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>1</td>
+<td>Accessories</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>2</td>
+<td>Clothing</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>3</td>
+<td>Footwear</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>4</td>
+<td>Outerwear</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<section id="season" class="level4 cell-output cell-output-display cell-output-markdown">
+<h4 class="anchored" data-anchor-id="season">season</h4>
+</section>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">season_id</th>
+<th data-quarto-table-cell-role="th">season_name</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>1</td>
+<td>Fall</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>2</td>
+<td>Spring</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>3</td>
+<td>Summer</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>4</td>
+<td>Winter</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<section id="shipping_type" class="level4 cell-output cell-output-display cell-output-markdown">
+<h4 class="anchored" data-anchor-id="shipping_type">shipping_type</h4>
+</section>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">shipping_type_id</th>
+<th data-quarto-table-cell-role="th">shipping_type_name</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>1</td>
+<td>2-Day Shipping</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>2</td>
+<td>Express</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>3</td>
+<td>Free Shipping</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>4</td>
+<td>Next Day Air</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>5</td>
+<td>Standard</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="supporting-files" class="level2">
+<h2 class="anchored" data-anchor-id="supporting-files">Supporting Files</h2>
+<section id="script" class="level3">
+<h3 class="anchored" data-anchor-id="script">Script</h3>
+<p>Extracting the individual table data from the original CSV was done via a scripting language. This was necessary to extract the data that appears in separate tables and addressed by foreign keys. The language used was Clojure, or in this case it was Babashka as this is a “scripting” variant. The code can be found in <a href="https://quoll.github.io/608_SQL/scripts/extract.bb"><code>scripts/extract.bb</code></a>.</p>
+</section>
+<section id="data-definition-language" class="level3">
+<h3 class="anchored" data-anchor-id="data-definition-language">Data Definition Language</h3>
+<p>The Data Definition Language file (DDL) was hand generated and defines each of the tables, along with their foreign keys. This can be found in <a href="https://quoll.github.io/608_SQL/data/definitions.sql"><code>data/definitions.sql</code></a></p>
+</section>
+<section id="data" class="level3">
+<h3 class="anchored" data-anchor-id="data">Data</h3>
+<p>The data is loaded using SQL <code>INSERT ... VALUES</code> statements. This are similar to Comma Separated Value files, and have the additional advantages or allowing multiple table structures in a single file, as well as being the native format that MySQL exports data in. This file was created from the CSV data exported by the script above.</p>
+<p>The data is found in <a href="https://quoll.github.io/608_SQL/data/data.sql"><code>data/data.sql</code></a></p>
+</section>
 </section>
 </section>
 

@@ -1,6 +1,8 @@
 ---
 title: "Assignment 5 Instroduction to SQL"
-format: html
+format:
+    html:
+        code-fold: true
 author: "Paula Gearon"
 url: "https://quoll.github.io/608_SQL"
 ---
@@ -40,7 +42,7 @@ A single field has also been extracted from the `Item` table into its own table 
 
 * `category`
 
-## Background
+## Design Details
 In assignment 3, each row was separated out in numerous tables, with the primary focus being on `Customer`, `Purchase`, and `Item`. Because many of the other fields have very low data sparsity, they were separated out into their own tables. The other option of using enumerated types was inappropriate, as they each represented a set of data that could potentially change over time.
 
 While customers are presumed to be capable of making multiple purchases (as indicated by the `frequency_of_purchases` field), this does not occur in the provided dataset. This leads to the unusual situation of Purchases and Items having a 1:1 relationship in the current data, _**however**_, the schema has been developed to assume that customers will come back for future purchases. This is an update to the schema presented for Assignment 3, as that schema was more focused on the data that was present. The new schema represents an active database, so new considerations have been made.
@@ -57,12 +59,15 @@ The resulting schema is represented here in the following Chen and Crow's Foot E
 ![Shopping Trends Crows Foot ER Diagram](https://quoll.github.io/608_SQL/diagrams/shopping_trends.png)
 
 
-## Python example
+## Table Data
+Typically, an SQL command of `SHOW TABLES;` would be ideal for showing all of the tables in the project. However, this database has also installed [phpMyAdmin](https://www.phpmyadmin.net/) which adds more tables, but these can be skipped by querying `information_schema.tables` directly.
+
 ```{python}
 from dotenv import load_dotenv
 import os
 from sqlalchemy import create_engine
 import pandas as pd
+from IPython.display import Markdown, display
 
 # conn = mysql.connector.connect(option_files=os.path.expanduser('~/.env'), database='project')
 def get_mysql_engine(env_path="~/.env"):
@@ -77,18 +82,43 @@ def get_mysql_engine(env_path="~/.env"):
     uri = f"mysql+mysqlconnector://{user}:{password}@{host}:{port}/{database}"
     return create_engine(uri)
 
-query = """
-SELECT c.age, c.gender, MIN(p.purchase_amount) AS 'min_price', MAX(p.purchase_amount) AS 'max_price'
-FROM customer c
-INNER JOIN purchase p ON c.customer_id = p.customer_id
-INNER JOIN item i ON p.item_id = i.item_id
-INNER JOIN category cat ON i.category_id = cat.category_id
-INNER JOIN season s ON p.season_id = s.season_id
-WHERE cat.category_name = 'Clothing'
-GROUP BY c.age, c.gender
-ORDER by c.age, c.gender
-"""
 conn = get_mysql_engine()
-df = pd.read_sql(query, conn)
-df
+query = """SELECT table_name
+FROM information_schema.tables
+WHERE table_schema ='project' AND table_name NOT LIKE 'pma\_\_%'
+ORDER BY table_schema, table_name;
+"""
+pd.read_sql(query, conn)
 ```
+
+We can also see the fields for each table:
+
+```{python}
+tables = ['customer', 'item', 'purchase', 'payment_method',
+          'frequency', 'location', 'category', 'season', 'shipping_type']
+query = f"""SELECT table_name, column_name, data_type
+FROM information_schema.columns
+WHERE table_name IN ({", ".join(f"'{x}'" for x in tables)})
+ORDER BY table_name, ordinal_position;
+"""
+pd.read_sql(query, conn)
+```
+
+Finally, we can see a sample of the data from each table:
+```{python}
+for table in tables:
+    display(Markdown(f"#### {table}"))
+    display(pd.read_sql(f"SELECT * FROM {table} LIMIT 5;", conn))
+```
+
+## Supporting Files
+### Script
+Extracting the individual table data from the original CSV was done via a scripting language. This was necessary to extract the data that appears in separate tables and addressed by foreign keys. The language used was Clojure, or in this case it was Babashka as this is a "scripting" variant. The code can be found in [`scripts/extract.bb`](https://quoll.github.io/608_SQL/scripts/extract.bb).
+
+### Data Definition Language
+The Data Definition Language file (DDL) was hand generated and defines each of the tables, along with their foreign keys. This can be found in [`data/definitions.sql`](https://quoll.github.io/608_SQL/data/definitions.sql)
+
+### Data
+The data is loaded using SQL `INSERT ... VALUES` statements. This are similar to Comma Separated Value files, and have the additional advantages or allowing multiple table structures in a single file, as well as being the native format that MySQL exports data in. This file was created from the CSV data exported by the script above.
+
+The data is found in [`data/data.sql`](https://quoll.github.io/608_SQL/data/data.sql)
