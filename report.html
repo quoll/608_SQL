@@ -176,7 +176,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="table-data" class="level2">
 <h2 class="anchored" data-anchor-id="table-data">Table Data</h2>
 <p>Typically, an SQL command of <code>SHOW TABLES;</code> would be ideal for showing all of the tables in the project. However, this database has also installed <a href="https://www.phpmyadmin.net/">phpMyAdmin</a> which adds more tables, but these can be skipped by querying <code>information_schema.tables</code> directly.</p>
-<div id="d3729653" class="cell" data-execution_count="1">
+<div id="1967f074" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dotenv <span class="im">import</span> load_dotenv</span>
@@ -206,7 +206,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
 <span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>pd.read_sql(query, conn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="7">
+<div class="cell-output cell-output-display" data-execution_count="10">
 <div>
 
 
@@ -261,7 +261,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>We can also see the fields for each table:</p>
-<div id="862d71ef" class="cell" data-execution_count="2">
+<div id="9ad15e83" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>tables <span class="op">=</span> [<span class="st">'customer'</span>, <span class="st">'item'</span>, <span class="st">'purchase'</span>, <span class="st">'payment_method'</span>,</span>
@@ -273,7 +273,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="ss">"""</span></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>pd.read_sql(query, conn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="8">
+<div class="cell-output cell-output-display" data-execution_count="11">
 <div>
 
 
@@ -504,7 +504,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Finally, we can see a sample of the data from each table:</p>
-<div id="3c91f395" class="cell" data-execution_count="3">
+<div id="2ac7dbb5" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> table <span class="kw">in</span> tables:</span>
@@ -1027,12 +1027,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="data-definition-language" class="level3">
 <h3 class="anchored" data-anchor-id="data-definition-language">Data Definition Language</h3>
-<p>The Data Definition Language file (DDL) was hand generated and defines each of the tables, along with their foreign keys. This can be found in [<code>data/definitions.sql</code>]((https://github.com/quoll/608_SQL/blob/main/data/definitions.sql)</p>
+<p>The Data Definition Language file (DDL) was hand generated and defines each of the tables, along with their foreign keys. This can be found in <a href="https://github.com/quoll/608_SQL/blob/main/data/definitions.sql"><code>data/definitions.sql</code></a></p>
 </section>
 <section id="data" class="level3">
 <h3 class="anchored" data-anchor-id="data">Data</h3>
 <p>The data is loaded using SQL <code>INSERT ... VALUES</code> statements. This are similar to Comma Separated Value files, and have the additional advantages or allowing multiple table structures in a single file, as well as being the native format that MySQL exports data in. This file was created from the CSV data exported by the script above.</p>
-<p>The data is found in [<code>data/data.sql</code>]((https://github.com/quoll/608_SQL/blob/main/data/data.sql)</p>
+<p>The data is found in <a href="https://github.com/quoll/608_SQL/blob/main/data/data.sql"><code>data/data.sql</code></a></p>
 </section>
 </section>
 </section>

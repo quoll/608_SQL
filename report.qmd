@@ -116,9 +116,9 @@ for table in tables:
 Extracting the individual table data from the original CSV was done via a scripting language. This was necessary to extract the data that appears in separate tables and addressed by foreign keys. The language used was Clojure, or in this case it was Babashka as this is a "scripting" variant. The code can be found in [`scripts/extract.bb`](https://github.com/quoll/608_SQL/blob/main/scripts/extract.bb).
 
 ### Data Definition Language
-The Data Definition Language file (DDL) was hand generated and defines each of the tables, along with their foreign keys. This can be found in [`data/definitions.sql`]((https://github.com/quoll/608_SQL/blob/main/data/definitions.sql)
+The Data Definition Language file (DDL) was hand generated and defines each of the tables, along with their foreign keys. This can be found in [`data/definitions.sql`](https://github.com/quoll/608_SQL/blob/main/data/definitions.sql)
 
 ### Data
 The data is loaded using SQL `INSERT ... VALUES` statements. This are similar to Comma Separated Value files, and have the additional advantages or allowing multiple table structures in a single file, as well as being the native format that MySQL exports data in. This file was created from the CSV data exported by the script above.
 
-The data is found in [`data/data.sql`]((https://github.com/quoll/608_SQL/blob/main/data/data.sql)
+The data is found in [`data/data.sql`](https://github.com/quoll/608_SQL/blob/main/data/data.sql)
