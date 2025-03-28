@@ -4,7 +4,10 @@ format:
     html:
         code-fold: true
 author: "Paula Gearon"
-url: "https://quoll.github.io/608_SQL"
+url: "https://quoll.github.io/608_SQL/report.html"
+github: "https://github.com/quoll/608_SQL"
+indexreport: "https://quoll.github.io/608_SQL/"
+toc: true
 ---
 # Getting Started with SQL
 
@@ -99,11 +102,26 @@ ORDER BY table_name, ordinal_position;
 pd.read_sql(query, conn)
 ```
 
-Finally, we can see a sample of the data from each table:
+We can also see a sample of the data from each table:
 ```{python}
 for table in tables:
     display(Markdown(f"#### {table}"))
     display(pd.read_sql(f"SELECT * FROM {table} LIMIT 5;", conn))
+```
+
+With this in place, we can query the data. For instance, we can query how much men and women are prepared to spend on clothing up to the age of 30.
+
+```{python}
+query = f"""SELECT c.age, c.gender, MIN(p.purchase_amount) AS 'min_price', MAX(p.purchase_amount) AS 'max_price'
+FROM customer c
+INNER JOIN purchase p ON c.customer_id = p.customer_id
+INNER JOIN item i ON p.item_id = i.item_id
+INNER JOIN category cat ON i.category_id = cat.category_id
+WHERE cat.category_name = 'Clothing' AND c.age <= 30
+GROUP BY c.age, c.gender
+ORDER by c.age, c.gender
+"""
+pd.read_sql(query, conn)
 ```
 
 ## Supporting Files

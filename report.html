@@ -75,10 +75,40 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </head>
 
-<body class="fullcontent">
+<body>
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#getting-started-with-sql" id="toc-getting-started-with-sql" class="nav-link active" data-scroll-target="#getting-started-with-sql">Getting Started with SQL</a>
+  <ul class="collapse">
+  <li><a href="#desription" id="toc-desription" class="nav-link" data-scroll-target="#desription">Desription</a>
+  <ul class="collapse">
+  <li><a href="#customers" id="toc-customers" class="nav-link" data-scroll-target="#customers">Customers</a></li>
+  <li><a href="#items" id="toc-items" class="nav-link" data-scroll-target="#items">Items</a></li>
+  <li><a href="#purchase" id="toc-purchase" class="nav-link" data-scroll-target="#purchase">Purchase</a></li>
+  <li><a href="#other" id="toc-other" class="nav-link" data-scroll-target="#other">Other</a></li>
+  </ul></li>
+  <li><a href="#design-details" id="toc-design-details" class="nav-link" data-scroll-target="#design-details">Design Details</a></li>
+  <li><a href="#er-diagrams" id="toc-er-diagrams" class="nav-link" data-scroll-target="#er-diagrams">ER Diagrams</a>
+  <ul class="collapse">
+  <li><a href="#shopping-trends-chen-er-diagram" id="toc-shopping-trends-chen-er-diagram" class="nav-link" data-scroll-target="#shopping-trends-chen-er-diagram">Shopping Trends Chen ER Diagram</a></li>
+  <li><a href="#shopping-trends-crows-foot-er-diagram" id="toc-shopping-trends-crows-foot-er-diagram" class="nav-link" data-scroll-target="#shopping-trends-crows-foot-er-diagram">Shopping Trends Crows Foot ER Diagram</a></li>
+  </ul></li>
+  <li><a href="#table-data" id="toc-table-data" class="nav-link" data-scroll-target="#table-data">Table Data</a></li>
+  <li><a href="#supporting-files" id="toc-supporting-files" class="nav-link" data-scroll-target="#supporting-files">Supporting Files</a>
+  <ul class="collapse">
+  <li><a href="#script" id="toc-script" class="nav-link" data-scroll-target="#script">Script</a></li>
+  <li><a href="#data-definition-language" id="toc-data-definition-language" class="nav-link" data-scroll-target="#data-definition-language">Data Definition Language</a></li>
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
@@ -176,7 +206,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="table-data" class="level2">
 <h2 class="anchored" data-anchor-id="table-data">Table Data</h2>
 <p>Typically, an SQL command of <code>SHOW TABLES;</code> can be used to show all of the tables in the project. This can also be done manually by querying the systems tables, if filtering is required.</p>
-<div id="f91af8ac" class="cell" data-execution_count="1">
+<div id="ec80c583" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dotenv <span class="im">import</span> load_dotenv</span>
@@ -256,7 +286,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>We can also see the fields for each table:</p>
-<div id="889822ca" class="cell" data-execution_count="2">
+<div id="76a550d8" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>tables <span class="op">=</span> [<span class="st">'customer'</span>, <span class="st">'item'</span>, <span class="st">'purchase'</span>, <span class="st">'payment_method'</span>,</span>
@@ -355,8 +385,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>Finally, we can see a sample of the data from each table:</p>
-<div id="2271b85c" class="cell" data-execution_count="3">
+<p>We can also see a sample of the data from each table:</p>
+<div id="27b1501e" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> table <span class="kw">in</span> tables:</span>
@@ -863,6 +893,224 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td data-quarto-table-cell-role="th">4</td>
 <td>4</td>
 <td>Standard</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>With this in place, we can query the data. For instance, we can query how much men and women are prepared to spend on clothing up to the age of 30.</p>
+<div id="894448b7" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>query <span class="op">=</span> <span class="ss">f"""SELECT c.age, c.gender, MIN(p.purchase_amount) AS 'min_price', MAX(p.purchase_amount) AS 'max_price'</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ss">FROM customer c</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ss">INNER JOIN purchase p ON c.customer_id = p.customer_id</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ss">INNER JOIN item i ON p.item_id = i.item_id</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="ss">INNER JOIN category cat ON i.category_id = cat.category_id</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="ss">WHERE cat.category_name = 'Clothing' AND c.age &lt;= 30</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="ss">GROUP BY c.age, c.gender</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="ss">ORDER by c.age, c.gender</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="ss">"""</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>pd.read_sql(query, conn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">age</th>
+<th data-quarto-table-cell-role="th">gender</th>
+<th data-quarto-table-cell-role="th">min_price</th>
+<th data-quarto-table-cell-role="th">max_price</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>18</td>
+<td>Male</td>
+<td>22.0</td>
+<td>100.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>18</td>
+<td>Female</td>
+<td>25.0</td>
+<td>100.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>19</td>
+<td>Male</td>
+<td>23.0</td>
+<td>98.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>19</td>
+<td>Female</td>
+<td>26.0</td>
+<td>97.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>20</td>
+<td>Male</td>
+<td>23.0</td>
+<td>97.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">5</td>
+<td>20</td>
+<td>Female</td>
+<td>23.0</td>
+<td>99.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">6</td>
+<td>21</td>
+<td>Male</td>
+<td>20.0</td>
+<td>95.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">7</td>
+<td>21</td>
+<td>Female</td>
+<td>31.0</td>
+<td>86.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">8</td>
+<td>22</td>
+<td>Male</td>
+<td>22.0</td>
+<td>88.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">9</td>
+<td>22</td>
+<td>Female</td>
+<td>20.0</td>
+<td>97.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">10</td>
+<td>23</td>
+<td>Male</td>
+<td>22.0</td>
+<td>98.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">11</td>
+<td>23</td>
+<td>Female</td>
+<td>20.0</td>
+<td>97.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">12</td>
+<td>24</td>
+<td>Male</td>
+<td>20.0</td>
+<td>100.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">13</td>
+<td>24</td>
+<td>Female</td>
+<td>23.0</td>
+<td>95.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">14</td>
+<td>25</td>
+<td>Male</td>
+<td>23.0</td>
+<td>100.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">15</td>
+<td>25</td>
+<td>Female</td>
+<td>23.0</td>
+<td>98.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">16</td>
+<td>26</td>
+<td>Male</td>
+<td>24.0</td>
+<td>97.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">17</td>
+<td>26</td>
+<td>Female</td>
+<td>28.0</td>
+<td>95.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">18</td>
+<td>27</td>
+<td>Male</td>
+<td>22.0</td>
+<td>89.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">19</td>
+<td>27</td>
+<td>Female</td>
+<td>23.0</td>
+<td>96.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">20</td>
+<td>28</td>
+<td>Male</td>
+<td>20.0</td>
+<td>98.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">21</td>
+<td>28</td>
+<td>Female</td>
+<td>38.0</td>
+<td>97.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">22</td>
+<td>29</td>
+<td>Male</td>
+<td>24.0</td>
+<td>99.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">23</td>
+<td>29</td>
+<td>Female</td>
+<td>35.0</td>
+<td>96.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">24</td>
+<td>30</td>
+<td>Male</td>
+<td>24.0</td>
+<td>93.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">25</td>
+<td>30</td>
+<td>Female</td>
+<td>26.0</td>
+<td>99.0</td>
 </tr>
 </tbody>
 </table>
